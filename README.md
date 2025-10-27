@@ -57,7 +57,6 @@ LICENSE
 ## 🧠 How to Use Snippets
 
 1. **Start with your base IAM configuration** (`type: IamConfig`)
-
 2. **Import one or more snippets:**
 
 ```bash
@@ -98,11 +97,8 @@ spec:
 ```
 
 - Avoid hard-coded IDs to prevent conflicts.
-
 - Keep snippets minimal and focused on a single purpose.
-
 - Test using the IAM Config Editor or CLI before submitting.
-
 - Document any dependencies or assumptions in comments.
 
 ---
@@ -112,7 +108,6 @@ spec:
 We welcome contributions from everyone!
 
 1. Fork this repository.
-
 2. Create a new branch:
 
 ```bash
@@ -120,9 +115,7 @@ git checkout -b feature/my-new-snippet
 ```
 
 3. Add your snippet under the appropriate folder.
-
 4. Validate it using the IAM CLI.
-
 5. Open a Pull Request with a clear description.
 
 Before contributing, please read the [`CONTRIBUTING.md`](CONTRIBUTING.md) file for detailed guidelines.
@@ -147,7 +140,7 @@ Before contributing, please read the [`CONTRIBUTING.md`](CONTRIBUTING.md) file f
 
 ## 🛡 License
 
-This repository is released under the **[insert license name, e.g. MIT or Apache 2.0]**.  
+This repository is released under the MIT license.  
 See the [LICENSE](LICENSE) file for details.
 
 ---
