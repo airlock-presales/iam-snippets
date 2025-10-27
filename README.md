@@ -34,13 +34,15 @@ We encourage **partners, customers, and the community** to contribute their own 
 
 ```ini
 /snippets
-   ├── authentication/
-   │     ├── email-otp-verified.yaml
-   │     ├── mtan-activation-alphabet.yaml
-   ├── authorization/
-   │     ├── role-based-access.yaml
-   ├── integrations/
-   │     ├── third-party-oauth-connector.yaml
+   ├── email-otp-verified/
+   │  ├── email-otp-verified.yaml
+   │  ├── README.md # with explanation and use-case description 
+   ├── mtan-activation-alphabet/
+   │  ├── mtan-activation-alphabet.yaml
+   │  ├── README.md # with explanation and use-case description
+   ├── role-based-access/
+   │  ├── role-based-access.yaml
+   │  ├── README.md # with explanation and use-case description
    └── ...
 README.md
 CONTRIBUTING.md
@@ -48,7 +50,7 @@ LICENSE
 ```
 
 - Each `.yaml` file is a snippet (`type: IamSnippet`).
-- Snippets are grouped by domain (authentication, authorization, integrations, etc.).
+- Snippets are currently not grouped, it may change in future! Do never link to a snippet directly.
 - `CONTRIBUTING.md` explains how to add and test new snippets.
 - `LICENSE` clarifies how this library can be used.
 

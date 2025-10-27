@@ -58,13 +58,15 @@ spec:
 ### Guidelines
 
 - **Use descriptive metadata**:
-  - `name` should be concise but clear.
-  - Add relevant `tags` to help others find your snippet.
+   - `name` should be concise but clear.
+   - Add relevant `tags` to help others find your snippet.
+
 - **Avoid hardcoded IDs** to prevent conflicts when imported.
 - **Keep it modular** — one focused purpose per snippet.
 - **Validate your YAML** before submitting.
 - **Add inline comments** to explain non-obvious configuration details.
 - **Document dependencies** — if your snippet relies on another snippet or IAM component.
+- **Readme** - to explain in more details to others what this snippet is doing and how it is used.
 
 ---
 
@@ -91,44 +93,53 @@ Validation should pass **without warnings or errors**.
 
 ## 🪄 Repository Structure
 
-```
+```ini
 /snippets
-   ├── authentication/
-   ├── authorization/
-   ├── integrations/
-   ├── ui/
-   └── other/
+   ├── snippet-name/
+   |  ├── snippet-name.yaml
+   |  ├── README.md # with explanation and use-case description
+   ├── snippet-name1/
+   |  ├── snippet-name1.yaml
+   |  ├── README.md # with explanation and use-case description
+   ├── snippet-name2/
+   |  ├── snippet-name2.yaml
+   |  ├── README.md # with explanation and use-case description
 ```
-
-If no suitable folder exists, feel free to propose a new category in your pull request.
 
 ---
 
 ## 🪶 File Naming Convention
 
 - Use **kebab-case** for filenames.  
-  Example: `oauth2-login-handler.yaml`
+   Example: `oauth2-login-handler.yaml`
 - Include a **short, descriptive name** (no spaces, no special chars).
 - Optional but encouraged: prefix by topic if applicable.  
-  Example: `auth-email-verification.yaml`, `flow-mtan-registration.yaml`
+   Example: `auth-email-verification.yaml`, `flow-mtan-registration.yaml`
 
 ---
 
 ## 🧰 Submitting a Contribution
 
 1. **Fork** this repository.
+
 2. **Create a new branch**:
-   ```bash
-   git checkout -b feature/my-awesome-snippet
-   ```
+
+```bash
+git checkout -b feature/my-awesome-snippet
+```
+
 3. **Add your snippet** to the relevant folder.
+
 4. **Test and validate** your configuration.
+
 5. **Commit and push** your changes:
-   ```bash
-   git add .
-   git commit -m "Add: New email OTP verification snippet"
-   git push origin feature/my-awesome-snippet
-   ```
+
+```bash
+git add .
+git commit -m "Add: New email OTP verification snippet"
+git push origin feature/my-awesome-snippet
+```
+
 6. **Open a Pull Request (PR)** with:
    - A clear title and short description.
    - Explanation of what the snippet does.
@@ -147,6 +158,7 @@ Once you open a PR:
    - Missing metadata
    - Validation issues
    - Structure or naming conventions
+
 3. Once approved, your PR will be merged into the main branch.
 
 ---
