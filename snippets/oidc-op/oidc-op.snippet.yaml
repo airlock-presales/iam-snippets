@@ -1,0 +1,187 @@
+schemaVersion: iam.airlock.com/v1
+type: IamSnippet
+metadata:
+  iamVersion: '8.5'
+  history:
+    - datetime: 2025-10-24T16:02:12.059Z
+      author: Airlock Presales
+      comment: OIDC OP
+spec:
+  - type: OAuth2AS
+    displayName: OIDC OP
+    properties:
+      consentStorageRepository:
+        type: OAuth2ConsentStorage
+        properties:
+          repository:
+            type: OAuth2ConsentRepository
+            properties:
+      deleteTokensOnUserLocked: 'true'
+      discoveryEndpoint:
+        type: OpenIdConnectDiscoveryEndpoint
+      dynamicClientRegistration:
+        type: DefaultOAuth2ClientRegistration
+        properties:
+          clientSecretGenerator:
+            type: ExtendedStringGenerator
+            displayName: OIDC DCR Password Generator
+            properties:
+              pattern: '{extended:32}'
+      identifier:
+        type: OAuth2ASIdentifier
+        properties:
+          identifier:
+      issuerId:
+        type: OAuth2IssuerId
+        properties:
+          issuerId:
+      oauth2Grants:
+        type: OAuth2GrantsAndEndpoints
+        properties:
+          oidcAuthorizationCodeGrant:
+            type: OpenIdConnectAuthorizationCodeGrant
+            properties:
+              allowEmptyScope: 'true'
+              authorizationCodeExpiresIn: '15'
+              consent:
+                type: OAuth2LocalConsent
+                properties:
+                  enableConsentStorage: 'true'
+              idToken:
+                type: OpenIdConnectIdToken
+                properties:
+                  claims:
+                    type: OpenIDConnectClaimsConfiguration
+                    properties:
+                      customClaims:
+                        - pluginList:
+                            - type: CustomContextDataStringClaim
+                              displayName: OIDC ID Token Claim email
+                              properties:
+                                claimCondition:
+                                  type: RequiredScopesClaimCondition
+                                  id: 0a952c55-268d-4d42-8eb3-da38cc3d0763
+                                  displayName: Scope 'email'
+                                  properties:
+                                    scopes:
+                                      - valueList:
+                                          - email
+                                claimName: email
+                            - type: CustomContextDataStringClaim
+                              displayName: OIDC ID Token Claim given_name
+                              properties:
+                                claimCondition:
+                                  type: RequiredScopesClaimCondition
+                                  id: 952e2273-26a2-42c2-bbb7-89ab0be794e2
+                                  displayName: Scope 'profile'
+                                  properties:
+                                    scopes:
+                                      - valueList:
+                                          - profile
+                                claimName: given_name
+                            - type: CustomContextDataStringClaim
+                              displayName: OIDC ID Token Claim family_name
+                              properties:
+                                claimCondition:
+                                  ref: 952e2273-26a2-42c2-bbb7-89ab0be794e2
+                                claimName: family_name
+                  signer:
+                    type: OpenIDConnectIDTokenPrivateKeySignatureSigner
+                    properties:
+                      keystoreFile: instances/tc_5/oidc/op-signer.jks
+                      keystorePassword:
+                        - value:
+                            storageId: op-signer-keystore
+                      signingKeyAlias: airlock-iam-oidc-op
+                      signingKeyPassword:
+                        - value:
+                            storageId: op-signer-keystore
+              invalidateOldAccessTokensOnRefresh: 'true'
+              loginHintFlowSettings:
+                type: OpenIdConnectUsernameLoginHintFlow
+                properties:
+                  usernamePattern: '[a-zA-Z0-9_.@-]*'
+              pushedAuthorizationRequests:
+                type: OAuth2Par
+                properties:
+                  repository:
+                    type: OAuth2ParRequestRepository
+                    properties:
+              refreshTokenExpiresIn: '14400'
+              scopeFiltering:
+                type: OAuth2CustomScopesSettings
+                properties:
+                  conditions:
+                    - pluginList:
+                        - type: FlowConditionBasedOAuth2ScopeCondition
+                          displayName: Scope Condition email
+                          properties:
+                            condition:
+                              type: AlwaysTrueCondition
+                              id: a3c6eb69-4ddc-4b04-a66e-a57b1f0693fd
+                            scopeMatcher:
+                              type: OAuth2ScopeMatcher
+                              displayName: Allowed scope email
+                              properties:
+                                scopeNamePattern: email
+                        - type: FlowConditionBasedOAuth2ScopeCondition
+                          displayName: Scope Condition profile
+                          properties:
+                            condition:
+                              ref: a3c6eb69-4ddc-4b04-a66e-a57b1f0693fd
+                            scopeMatcher:
+                              type: OAuth2ScopeMatcher
+                              displayName: Allowed Scope profile
+                              properties:
+                                scopeNamePattern: profile
+              scopePolicy: EMPTY_SCOPES_ALLOWED
+      persistedClients:
+        type: OAuth2PersistedClient
+        properties:
+          clientRepository:
+            type: TechClientRepository
+            properties:
+              storageEncryptionConfig:
+                type: StorageEncryption
+                properties:
+                  secret:
+                    - value:
+                        storageId: oidc op storage encryption
+      sessionRepository:
+        type: OAuth2SessionRepository
+        properties:
+      staticClients:
+        type: OAuth2StaticClients
+      tokenIntrospectionEndpoint:
+        type: OAuth2TokenIntrospection
+        properties:
+          authenticationSettings:
+            type: BasicAuthTokenIntrospection
+            properties:
+              allowedUsers:
+                - pluginList: []
+      tokenRevocationEndpoint:
+        type: OAuth2TokenRevocation
+      userInfoEndpoint:
+        type: OpenIDConnectUserInfoEndpoint
+        properties:
+          standardClaims:
+            - pluginList:
+                - type: OpenIDConnectEmailStandardClaim
+                  displayName: OIDC Claim email
+                  properties:
+                    claimCondition:
+                      ref: 0a952c55-268d-4d42-8eb3-da38cc3d0763
+                    contextDataField: email
+                - type: OpenIDConnectGivenNameStandardClaim
+                  displayName: OIDC Claim given_name
+                  properties:
+                    claimCondition:
+                      ref: 952e2273-26a2-42c2-bbb7-89ab0be794e2
+                    contextDataField: givenname
+                - type: OpenIDConnectFamilyNameStandardClaim
+                  displayName: OIDC Claim family_name
+                  properties:
+                    claimCondition:
+                      ref: 952e2273-26a2-42c2-bbb7-89ab0be794e2
+                    contextDataField: surname
