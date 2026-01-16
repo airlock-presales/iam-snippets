@@ -1,0 +1,83 @@
+schemaVersion: iam.airlock.com/v1
+type: IamSnippet
+metadata:
+  iamVersion: '8.5'
+spec:
+  - type: AcknowledgeMessageStep
+    id: remoteExec-showResult
+    displayName: Show remoteExec result
+    properties:
+      serverMessage:
+        type: TemplateStringValueProvider
+        id: remoteExec-templatedText
+        displayName: Show remoteExec response
+        properties:
+          template: |-
+            <h3>Remote Script Exec!</h3>
+            <p>And the response was:</p>
+            <p>${response}</p>
+          valueEncoders:
+            - pluginList:
+                - type: HtmlStringEscaper
+          valueMapProviders:
+            - pluginList:
+                - type: ScriptExecutionResultValueMapProvider
+                  id: remoteExec-resultMap
+                  displayName: Scriptable remoteExec result
+                  properties:
+                    namespaceConfig:
+                      type: ScriptNamespace
+                      id: remoteExec-resultNamespace
+                      displayName: Script Namespace remoteExec
+                      properties:
+                        identifier: remoteExec
+  - type: ScriptableStep
+    id: remoteExec-runScript
+    displayName: RemoteExec helloworld user
+    properties:
+      inputs:
+        - pluginList:
+            - type: ValueProviderMapProvider
+              id: remoteExec-inputMap
+              displayName: Remote Script Info Map Name
+              properties:
+                valueProviders:
+                  - pluginMap:
+                      name:
+                        type: UserPrincipalNameProvider
+                        id: remoteExec-userName
+                        displayName: Username Provider
+                      remoteExecKey:
+                        type: StringStaticValueProvider
+                        id: remoteExec-authAPIkey
+                        displayName: Static String remoteExecKey
+                        properties:
+                          value: API key
+                      remoteExecScript:
+                        type: StringStaticValueProvider
+                        id: remoteExec-scriptName
+                        displayName: Static String remoteExecScript
+                        properties:
+                          value: hello
+                      remoteExecTimeout:
+                        type: IntegerStaticValueProvider
+                        id: remoteExec-requestTimeout
+                        displayName: Static Integer remoteExecTimeout
+                        properties:
+                          value: '30'
+                      remoteExecURL:
+                        type: StringStaticValueProvider
+                        id: remoteExec-scriptHost
+                        displayName: Static String remoteExecURL
+                        properties:
+                          value: http://localhost:8000/run
+      namespace:
+        ref: remoteExec-resultNamespace
+      outputs:
+        - pluginMap:
+            response:
+              type: ScriptExpectedOutputType
+              displayName: Script Result String required
+              properties:
+                outputValueType: STRING
+      script: "-- Script to send input parameters to remote exec\n\nlocal curl = require \"cURL\"\n\nfunction remoteExec ()\n    local remoteURL = iam.input_map[\"remoteExecURL\"]\n    local remoteKey = iam.input_map[\"remoteExecKey\"]\n    local remoteScript = iam.input_map[\"remoteExecScript\"]\n    local remoteTimeout = iam.input_map[\"remoteExecTimeout\"]\n    local request_map = {}\n    local output_map = {}\n    local response = \"\"\n\n    iam.log:info(\"script \" .. remoteScript)\n    request_map[\"script\"] = remoteScript\n    request_map[\"params\"] = iam.input_map\n    request_map[\"params\"][\"remoteExecURL\"] = nil\n    request_map[\"params\"][\"remoteExecKey\"] = nil\n    request_map[\"params\"][\"remoteExecScript\"] = nil\n    request_map[\"params\"][\"remoteExecTimeout\"] = nil\n    \n    local function collectResponse (chunk)\n        response = response .. chunk\n    end\n\n    local request = curl.easy{\n        url = remoteURL,\n        post = true,\n        httpheader = {\n            \"Content-Type: application/json\",\n            \"Authorization: Bearer \" .. remoteKey\n        },\n        postfields = iam.cjson.encode( request_map ),\n        writefunction = collectResponse,\n        [curl.OPT_TIMEOUT] = remoteTimeout -- request timeout\n    }\n\n    request:perform()\n    iam.log:info(\"- response: \" .. response)\n    if request:getinfo(curl.INFO_RESPONSE_CODE) == 200 then\n        output_map = iam.cjson.decode( response )\n    end\n    request:close()\n    return output_map\nend\n\nfunction iam_on_step_init ()\n    iam.log:info(\"remoteExec: call remote script\")\n    local output_map = remoteExec()\n    return output_map\nend"
