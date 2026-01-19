@@ -7,7 +7,7 @@ This repository provides a ready-to-import Airlock IAM Config Snippet.
 
 - Airlock IAM 8.5 or later
 - An Airlock IAM instance including a working configuration, according to your requirements
-- Remote exec host, e.g. [scriptExec](https://github.com/airlock-presales/scriptExec) for Python
+- Remote exec host, e.g. [iamScriptExec](https://github.com/airlock-presales/iam-script-exec) for Python
 - Lua 5.4 and Luarocks installed (previous versions may work but have not been tested)
 
 
